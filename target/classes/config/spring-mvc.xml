@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- <context:component-scan base-package="com.goldrepo.demo.controller"/> -->
+	<context:component-scan base-package="com.goldrepo.vr.controller"/>
+	<context:component-scan base-package="com.goldrepo.fr.controller"/>
+	
+	<mvc:annotation-driven>
+        <mvc:message-converters>
+        	<!-- 避免返回中文带双引号 -->
+        	<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+            <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+            	<property name="supportedMediaTypes">
+            		<list>
+            			<value>text/html;charset=UTF-8</value>
+            		</list>
+            	</property>
+            	<property name="objectMapper">
+            		<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+            			<!-- 定义日期格式 -->
+            			<property name="dateFormat">
+            				<bean class="java.text.SimpleDateFormat">
+            					<constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
+            				</bean>
+            			</property>
+            			<!-- 过滤为空字段 -->
+            			<property name="serializationInclusion">
+            				<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
+            			</property>
+            		</bean>
+            	</property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    
+    <!-- 为了让web.xml中设置的welcome-file生效 -->
+    <mvc:default-servlet-handler/>
+    
+    <!-- 支持跨域访问,springframwork需要4.2以上 -->
+    <!-- <mvc:cors>
+    	<mvc:mapping path="/**" allowed-origins="*" allow-credentials="true" max-age="1800" allowed-methods="GET,POST,OPTIONS" allowed-headers="Origin,X-Requested-With,Content-Type,Accept,token"/>
+    </mvc:cors> -->
+    <!-- <mvc:interceptors>
+    	<mvc:interceptor>
+    		<mvc:mapping path="/**"/>
+    		<bean class="com.goldrepo.interceptor.CrosInterceptor"></bean>
+    	</mvc:interceptor>
+    </mvc:interceptors> -->
+    
+</beans>
